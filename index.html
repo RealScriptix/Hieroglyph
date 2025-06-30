@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hieroglyph Studios — Guard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="https://imgur.com/nPwVQJu.png">
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --accent: #39ff14;
+      --text: #f0f0f0;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top left, #121212, #000000);
+      color: var(--text);
+      scroll-behavior: smooth;
+    }
+    header {
+      position: fixed;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 999;
+      backdrop-filter: blur(8px);
+    }
+    header h1 {
+      color: var(--accent);
+      font-size: 1.4rem;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 1.5rem;
+      font-weight: 500;
+    }
+    nav a:hover {
+      color: var(--accent);
+    }
+    section {
+      padding: 6rem 2rem 4rem;
+      max-width: 1000px;
+      margin: auto;
+    }
+    .hero {
+      text-align: center;
+      padding-top: 100px;
+    }
+    .btn {
+      background: var(--accent);
+      color: black;
+      padding: 0.7rem 1.4rem;
+      border-radius: 5px;
+      font-weight: bold;
+      margin-top: 1.5rem;
+      text-decoration: none;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 1rem;
+      padding: 2rem;
+      margin-top: 1.5rem;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+    footer {
+      text-align: center;
+      font-size: 0.85rem;
+      opacity: 0.4;
+      padding: 2rem;
+    }
+    #admin-area input, #admin-area textarea {
+      display: block;
+      width: 100%;
+      margin: 1rem 0;
+      padding: 0.5rem;
+      background: #111;
+      color: var(--text);
+      border: 1px solid #333;
+      border-radius: 6px;
+    }
+    #news-entries img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Hieroglyph</h1>
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#about">About</a>
+    <a href="#guard">Guard</a>
+    <a href="#news">News</a>
+    <a href="#join">Join</a>
+    <a href="#staff">Staff Only</a>
+  </nav>
+</header>
+
+<section id="home" class="hero" data-aos="fade-up">
+  <h2>Welcome to Hieroglyph Studios</h2>
+  <p>Crafting powerful Roblox tech for serious developers.</p>
+  <a class="btn" href="#guard">Explore Guard</a>
+</section>
+
+<section id="about" data-aos="fade-up">
+  <h2>About Hieroglyph</h2>
+  <div class="card">
+    <p>We're a next-gen Roblox dev group building automation, moderation, and analytics tools for the most elite studios.</p>
+  </div>
+</section>
+
+<section id="guard" data-aos="fade-up">
+  <h2>Guard: Snapshot 1</h2>
+  <div class="card">
+    <p><strong>Guard</strong> provides moderation, logging, and security for Roblox developers.</p>
+    <ul>
+      <li>✅ Auto mod detection</li>
+      <li>✅ Player logging & analytics</li>
+      <li>✅ Discord Webhooks</li>
+    </ul>
+    <a class="btn" href="https://www.roblox.com/games/98769498064738/Hieroglyph-Products" target="_blank">Purchase on Roblox</a>
+  </div>
+</section>
+
+<section id="news" data-aos="fade-up">
+  <h2>News</h2>
+  <div id="news-entries"></div>
+</section>
+
+<section id="join" data-aos="fade-up">
+  <h2>Join Us</h2>
+  <div class="card">
+    <p>Come be a part of our community and help shape the future of Roblox development!</p>
+    <p><strong>Discord:</strong> <a href="https://discord.gg/U2w4RTu7" style="color: var(--accent);">Join here</a></p>
+  </div>
+</section>
+
+<section id="staff" data-aos="fade-up">
+  <h2>Staff Only</h2>
+  <div id="admin-login" class="card">
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()" class="btn">Login</button>
+  </div>
+
+  <div id="admin-area" class="card" style="display:none;">
+    <h3>Post News</h3>
+    <input id="news-title" placeholder="Title">
+    <input id="news-img" placeholder="Image URL (optional)">
+    <textarea id="news-body" placeholder="News content..."></textarea>
+    <button onclick="postNews()" class="btn">Post</button>
+  </div>
+</section>
+
+<footer>
+  &copy; 2025 Hieroglyph Studios. All rights reserved.
+</footer>
+
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script>AOS.init();</script>
+<script>
+  function login() {
+    const email = document.getElementById('email').value.trim();
+    const pass = document.getElementById('password').value.trim();
+    if (email === 'scriptixsite@scriptix.com' && pass === 'ScriptixSites') {
+      document.getElementById('admin-login').style.display = 'none';
+      document.getElementById('admin-area').style.display = 'block';
+      alert("Welcome, Admin.");
+    } else {
+      alert("Invalid credentials.");
+    }
+  }
+
+  function postNews() {
+    const title = document.getElementById('news-title').value.trim();
+    const img = document.getElementById('news-img').value.trim();
+    const body = document.getElementById('news-body').value.trim();
+    const entry = { title, img, body };
+    let stored = JSON.parse(localStorage.getItem("news") || "[]");
+    stored.unshift(entry);
+    localStorage.setItem("news", JSON.stringify(stored));
+    renderNews();
+  }
+
+  function renderNews() {
+    const container = document.getElementById('news-entries');
+    const news = JSON.parse(localStorage.getItem("news") || "[]");
+    container.innerHTML = news.map(n => `
+      <div class="card">
+        <h3>${n.title}</h3>
+        <p>${n.body}</p>
+        ${n.img ? `<img src="${n.img}" />` : ''}
+      </div>
+    `).join('');
+  }
+
+  renderNews();
+</script>
+</body>
+</html>
