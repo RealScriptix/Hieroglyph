@@ -11,14 +11,12 @@
       --accent: #39ff14;
       --text: #f0f0f0;
     }
-
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background: radial-gradient(circle at top left, #121212, #000000);
       color: var(--text);
     }
-
     header {
       background: rgba(0, 0, 0, 0.8);
       padding: 1rem 2rem;
@@ -30,27 +28,14 @@
       z-index: 10;
       backdrop-filter: blur(10px);
     }
-
-    header h1 {
-      color: var(--accent);
-    }
-
+    header h1 { color: var(--accent); }
     nav a {
       color: white;
       text-decoration: none;
       margin-left: 1rem;
     }
-
-    nav a:hover {
-      color: var(--accent);
-    }
-
-    main {
-      padding: 4rem 2rem;
-      max-width: 1000px;
-      margin: auto;
-    }
-
+    nav a:hover { color: var(--accent); }
+    main { padding: 4rem 2rem; max-width: 1000px; margin: auto; }
     .card {
       background: rgba(255, 255, 255, 0.03);
       border-radius: 1rem;
@@ -58,7 +43,6 @@
       margin-top: 1.5rem;
       box-shadow: 0 0 15px rgba(0,0,0,0.3);
     }
-
     .btn {
       background: var(--accent);
       color: black;
@@ -69,8 +53,7 @@
       cursor: pointer;
       margin-top: 1rem;
     }
-
-    input, textarea {
+    input, textarea, select {
       width: 100%;
       padding: 0.5rem;
       margin-top: 0.5rem;
@@ -79,11 +62,15 @@
       border-radius: 6px;
       color: white;
     }
-
     footer {
       text-align: center;
       padding: 2rem;
       opacity: 0.5;
+    }
+    img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-top: 1rem;
     }
   </style>
 </head>
@@ -93,7 +80,6 @@
   <h1>Hieroglyph</h1>
   <nav>
     <a href="/" onclick="navigate(event, '/')">Home</a>
-    <a href="/about" onclick="navigate(event, '/about')">About</a>
     <a href="/guard" onclick="navigate(event, '/guard')">Guard</a>
     <a href="/news" onclick="navigate(event, '/news')">News</a>
     <a href="/join" onclick="navigate(event, '/join')">Join</a>
@@ -101,56 +87,22 @@
   </nav>
 </header>
 
-<main id="app">
-  <!-- Content gets injected here -->
-</main>
+<main id="app"></main>
 
 <footer>&copy; 2025 Hieroglyph Studios. All rights reserved.</footer>
 
 <script>
-  // Routing logic (SPA using history API)
-  const routes = {
-    '/': () => `
-      <h2>Welcome to Hieroglyph Studios</h2>
-      <div class="card"><p>We create elite Roblox tools and frameworks for high-end game development.</p></div>
-    `,
-    '/about': () => `
-      <h2>About Us</h2>
-      <div class="card"><p>Hieroglyph Studios is dedicated to pushing the boundaries of Roblox development with automation, moderation, and data tools.</p></div>
-    `,
-    '/guard': () => `
-      <h2>Introducing: Guard</h2>
-      <div class="card">
-        <p><strong>Guard</strong> is our flagship moderation and analytics suite.</p>
-        <ul>
-          <li>✅ Auto-moderation</li>
-          <li>📊 Player tracking</li>
-          <li>📡 Webhook alerts</li>
-        </ul>
-        <a href="https://www.roblox.com/games/98769498064738/Hieroglyph-Products" target="_blank" class="btn">Buy on Roblox</a>
-      </div>
-    `,
-    '/news': () => {
-      const news = JSON.parse(localStorage.getItem('news') || '[]');
-      return `
-        <h2>News</h2>
-        ${news.map(n => `
-          <div class="card">
-            <h3>${n.title}</h3>
-            <p>${n.body}</p>
-            ${n.img ? `<img src="${n.img}" style="max-width:100%; border-radius:8px; margin-top:1rem;">` : ''}
-          </div>
-        `).join('')}
-      `;
-    },
-    '/join': () => `
-      <h2>Join Hieroglyph</h2>
-      <div class="card">
-        <p>Join our community and collaborate with top developers.</p>
-        <p><strong>Discord:</strong> <a href="https://discord.gg/U2w4RTu7" target="_blank" style="color:var(--accent);">discord.gg/U2w4RTu7</a></p>
-      </div>
-    `,
-    '/staff': () => `
+  const defaultPages = {
+    '/': `<h2>Welcome to Hieroglyph Studios</h2>
+         <div class="card"><p>We build elite Roblox systems for advanced creators. Dive into our tools, like <strong>Guard</strong>, designed to empower your studio.</p></div>`,
+    '/guard': '',
+    '/join': `<h2>Join Hieroglyph</h2>
+         <div class="card">
+           <p>We’re actively building. Connect and contribute:</p>
+           <p><strong>Discord:</strong> <a href="https://discord.gg/U2w4RTu7" target="_blank" style="color:var(--accent);">discord.gg/U2w4RTu7</a></p>
+         </div>`,
+    '/news': '',
+    '/staff': `
       <h2>Staff Login</h2>
       <div class="card" id="login-box">
         <input id="email" placeholder="Email" />
@@ -158,18 +110,35 @@
         <button onclick="login()" class="btn">Login</button>
       </div>
       <div class="card" id="admin-box" style="display:none;">
-        <h3>Post News</h3>
-        <input id="news-title" placeholder="News title" />
-        <input id="news-img" placeholder="Image URL (optional)" />
-        <textarea id="news-body" placeholder="News content..."></textarea>
-        <button class="btn" onclick="postNews()">Post</button>
-      </div>
-    `
+        <h3>Post or Edit Content</h3>
+        <select id="target-page">
+          <option value="/guard">/guard</option>
+          <option value="/news">/news (post)</option>
+        </select>
+        <select id="element-type">
+          <option value="p">Paragraph</option>
+          <option value="h1">Header 1</option>
+          <option value="h2">Header 2</option>
+          <option value="h3">Header 3</option>
+          <option value="b">Bold</option>
+          <option value="i">Italic</option>
+          <option value="u">Underline</option>
+          <option value="img">Image</option>
+        </select>
+        <textarea id="element-content" placeholder="Text or image URL..."></textarea>
+        <button class="btn" onclick="addElement()">Add</button>
+      </div>`
   };
 
   function render(path) {
-    const route = routes[path] || routes['/'];
-    document.getElementById('app').innerHTML = route();
+    const app = document.getElementById('app');
+    if (path === '/news') {
+      const posts = JSON.parse(localStorage.getItem('page:/news') || '[]');
+      app.innerHTML = `<h2>News</h2>` + posts.map(post => `<div class="card">${post}</div>`).join('');
+    } else {
+      const html = localStorage.getItem('page:' + path) || defaultPages[path] || defaultPages['/'];
+      app.innerHTML = html;
+    }
   }
 
   function navigate(e, path) {
@@ -177,9 +146,6 @@
     history.pushState({}, '', path);
     render(path);
   }
-
-  window.addEventListener('popstate', () => render(location.pathname));
-  window.addEventListener('DOMContentLoaded', () => render(location.pathname));
 
   function login() {
     const email = document.getElementById('email').value.trim();
@@ -192,16 +158,30 @@
     }
   }
 
-  function postNews() {
-    const title = document.getElementById('news-title').value;
-    const body = document.getElementById('news-body').value;
-    const img = document.getElementById('news-img').value;
-    const news = JSON.parse(localStorage.getItem('news') || '[]');
-    news.unshift({ title, body, img });
-    localStorage.setItem('news', JSON.stringify(news));
-    alert('News posted!');
-  }
-</script>
+  function addElement() {
+    const page = document.getElementById('target-page').value;
+    const type = document.getElementById('element-type').value;
+    const content = document.getElementById('element-content').value.trim();
+    if (!content) return alert("Content can't be empty.");
+    const el = type === 'img'
+      ? `<img src="${content}" alt="Image">`
+      : `<${type}>${content}</${type}>`;
 
+    if (page === '/news') {
+      let news = JSON.parse(localStorage.getItem('page:/news') || '[]');
+      news.unshift(el);
+      localStorage.setItem('page:/news', JSON.stringify(news));
+    } else {
+      const current = localStorage.getItem('page:' + page) || '';
+      localStorage.setItem('page:' + page, current + `<div class="card">${el}</div>`);
+    }
+
+    alert('Content added!');
+    document.getElementById('element-content').value = '';
+  }
+
+  window.addEventListener('popstate', () => render(location.pathname));
+  window.addEventListener('DOMContentLoaded', () => render(location.pathname));
+</script>
 </body>
 </html>
