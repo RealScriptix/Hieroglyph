@@ -1,187 +1,1735 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Hieroglyph Studios</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" href="https://imgur.com/nPwVQJu.png" />
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --accent: #39ff14;
-      --text: #f0f0f0;
-    }
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: radial-gradient(circle at top left, #121212, #000000);
-      color: var(--text);
-    }
-    header {
-      background: rgba(0, 0, 0, 0.8);
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      backdrop-filter: blur(10px);
-    }
-    header h1 { color: var(--accent); }
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin-left: 1rem;
-    }
-    nav a:hover { color: var(--accent); }
-    main { padding: 4rem 2rem; max-width: 1000px; margin: auto; }
-    .card {
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 1rem;
-      padding: 2rem;
-      margin-top: 1.5rem;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    }
-    .btn {
-      background: var(--accent);
-      color: black;
-      padding: 0.6rem 1.2rem;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 1rem;
-    }
-    input, textarea, select {
-      width: 100%;
-      padding: 0.5rem;
-      margin-top: 0.5rem;
-      background: #111;
-      border: 1px solid #333;
-      border-radius: 6px;
-      color: white;
-    }
-    footer {
-      text-align: center;
-      padding: 2rem;
-      opacity: 0.5;
-    }
-    img {
-      max-width: 100%;
-      border-radius: 10px;
-      margin-top: 1rem;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hieroglyph Studios - Premium Streaming</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #e50914;
+            --secondary-color: #221f1f;
+            --dark-bg: #141414;
+            --darker-bg: #000000;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --accent-color: #ffd700;
+            --success-color: #46d369;
+            --border-color: #333333;
+            --warning-color: #ff9500;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* Loading Animation */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #e50914, #ff6b6b);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader {
+            width: 80px;
+            height: 80px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .header.scrolled {
+            background: rgba(0, 0, 0, 0.95);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.5);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+            background: linear-gradient(45deg, #e50914, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-item {
+            position: relative;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            background: rgba(229, 9, 20, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-item.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .profile-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--border-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 80px;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Login/Signup Screen */
+        .auth-screen {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%23e50914;stop-opacity:0.3" /><stop offset="100%" style="stop-color:%23000000;stop-opacity:0.8" /></linearGradient></defs><rect width="1200" height="800" fill="url(%23grad1)"/></svg>');
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .auth-container {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 3rem;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: rgba(255,255,255,0.15);
+        }
+
+        .input-field::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(45deg, var(--primary-color), #ff4757);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(229, 9, 20, 0.4);
+        }
+
+        .auth-switch {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .auth-switch a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            position: relative;
+            height: 60vh;
+            margin-bottom: 3rem;
+            border-radius: 15px;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        }
+
+        .hero-content {
+            position: absolute;
+            bottom: 3rem;
+            left: 3rem;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .play-btn, .info-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .play-btn {
+            background: white;
+            color: black;
+        }
+
+        .play-btn:hover {
+            background: rgba(255,255,255,0.8);
+            transform: scale(1.05);
+        }
+
+        .info-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .info-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Movie Rows */
+        .movie-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .movie-row {
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem;
+            padding: 1rem 0;
+            scrollbar-width: none;
+        }
+
+        .movie-row::-webkit-scrollbar {
+            display: none;
+        }
+
+        .movie-card {
+            min-width: 200px;
+            height: 350px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--dark-bg));
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .movie-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .movie-poster {
+            width: 100%;
+            height: 70%;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .movie-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .movie-rating {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(0,0,0,0.8);
+            color: var(--accent-color);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .movie-info {
+            padding: 1rem;
+            height: 30%;
+        }
+
+        .movie-title {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .movie-genre {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Upload Section */
+        .upload-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .upload-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            padding: 1rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: rgba(255,255,255,0.15);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .upload-btn {
+            grid-column: 1 / -1;
+            padding: 1rem;
+            background: var(--success-color);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            background: #3bb54a;
+            transform: translateY(-2px);
+        }
+
+        .upload-btn.danger {
+            background: var(--primary-color);
+        }
+
+        .upload-btn.danger:hover {
+            background: #d40813;
+        }
+
+        .upload-btn.warning {
+            background: var(--warning-color);
+        }
+
+        .upload-btn.warning:hover {
+            background: #e6850a;
+        }
+
+        /* Settings Page */
+        .settings-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .settings-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        .toggle {
+            position: relative;
+            width: 50px;
+            height: 25px;
+            background: var(--border-color);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle.active {
+            background: var(--primary-color);
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 21px;
+            height: 21px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle.active::after {
+            transform: translateX(25px);
+        }
+
+        /* User Management */
+        .user-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-email {
+            font-weight: bold;
+        }
+
+        .user-type {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.3rem 0.8rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .btn-delete {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--dark-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .movie-details {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .movie-poster-large {
+            width: 200px;
+            height: 300px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .movie-meta {
+            flex: 1;
+        }
+
+        .rating-stars {
+            color: var(--accent-color);
+            margin: 0.5rem 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(0,0,0,0.95);
+                padding: 1rem;
+                display: none;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-content {
+                left: 1rem;
+                bottom: 1rem;
+            }
+
+            .movie-details {
+                flex-direction: column;
+            }
+
+            .movie-poster-large {
+                width: 100%;
+                height: 200px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease;
+        }
+
+        .slide-in-left {
+            animation: slideInLeft 0.6s ease;
+        }
+
+        .rating-input {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .star-rating {
+            font-size: 1.5rem;
+            color: var(--border-color);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .star-rating.active,
+        .star-rating:hover {
+            color: var(--accent-color);
+        }
+    </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loader"></div>
+    </div>
 
-<header>
-  <h1>Hieroglyph</h1>
-  <nav>
-    <a href="/" onclick="navigate(event, '/')">Home</a>
-    <a href="/guard" onclick="navigate(event, '/guard')">Guard</a>
-    <a href="/news" onclick="navigate(event, '/news')">News</a>
-    <a href="/join" onclick="navigate(event, '/join')">Join</a>
-    <a href="/staff" onclick="navigate(event, '/staff')">Staff Only</a>
-  </nav>
-</header>
+    <!-- Auth Screen -->
+    <div class="auth-screen" id="authScreen">
+        <div class="auth-container">
+            <h1 class="auth-title">Hieroglyph Studios</h1>
+            <div id="loginForm">
+                <div class="input-group">
+                    <input type="email" class="input-field" id="loginEmail" placeholder="Email address">
+                </div>
+                <div class="input-group">
+                    <input type="password" class="input-field" id="loginPassword" placeholder="Password">
+                </div>
+                <button class="auth-btn" onclick="login()">Sign In</button>
+                <div class="auth-switch">
+                    Don't have an account? <a href="#" onclick="showSignup()">Sign up now</a>
+                </div>
+            </div>
+            <div id="signupForm" style="display: none;">
+                <div class="input-group">
+                    <input type="text" class="input-field" id="signupName" placeholder="Full Name">
+                </div>
+                <div class="input-group">
+                    <input type="email" class="input-field" id="signupEmail" placeholder="Email address">
+                </div>
+                <div class="input-group">
+                    <input type="password" class="input-field" id="signupPassword" placeholder="Password">
+                </div>
+                <button class="auth-btn" onclick="signup()">Sign Up</button>
+                <div class="auth-switch">
+                    Already have an account? <a href="#" onclick="showLogin()">Sign in</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<main id="app"></main>
+    <!-- Main App -->
+    <div id="mainApp" style="display: none;">
+        <!-- Header -->
+        <header class="header" id="header">
+            <div class="nav-container">
+                <a href="#" class="logo">Hieroglyph</a>
+                <nav>
+                    <ul class="nav-menu">
+                        <li class="nav-item active" onclick="switchTab('home')">Home</li>
+                        <li class="nav-item" onclick="switchTab('new')">New</li>
+                        <li class="nav-item" onclick="switchTab('discover')">Discover</li>
+                        <li class="nav-item" onclick="switchTab('settings')">Settings</li>
+                        <li class="nav-item" onclick="switchTab('account')">Account Info</li>
+                        <li class="nav-item" id="userManagementTab" onclick="switchTab('users')" style="display: none;">User Management</li>
+                    </ul>
+                </nav>
+                <div class="user-menu">
+                    <button class="profile-btn" id="profileBtn">H</button>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </header>
 
-<footer>&copy; 2025 Hieroglyph Studios. All rights reserved.</footer>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Home Tab -->
+            <div id="home" class="dashboard fade-in">
+                <div class="hero-section">
+                    <div class="hero-content">
+                        <h1 class="hero-title">The Dark Knight</h1>
+                        <p class="hero-description">When the menace known as The Joker emerges from his mysterious past, he wreaks havoc and chaos on the people of Gotham.</p>
+                        <div class="hero-buttons">
+                            <button class="play-btn">▶ Play</button>
+                            <button class="info-btn">ℹ More Info</button>
+                        </div>
+                    </div>
+                </div>
 
-<script>
-  const defaultPages = {
-    '/': `<h2>Welcome to Hieroglyph Studios</h2>
-         <div class="card"><p>We build elite Roblox systems for advanced creators. Dive into our tools, like <strong>Guard</strong>, designed to empower your studio.</p></div>`,
-    '/guard': '',
-    '/join': `<h2>Join Hieroglyph</h2>
-         <div class="card">
-           <p>We’re actively building. Connect and contribute:</p>
-           <p><strong>Discord:</strong> <a href="https://discord.gg/U2w4RTu7" target="_blank" style="color:var(--accent);">discord.gg/U2w4RTu7</a></p>
-         </div>`,
-    '/news': '',
-    '/staff': `
-      <h2>Staff Login</h2>
-      <div class="card" id="login-box">
-        <input id="email" placeholder="Email" />
-        <input id="pass" type="password" placeholder="Password" />
-        <button onclick="login()" class="btn">Login</button>
-      </div>
-      <div class="card" id="admin-box" style="display:none;">
-        <h3>Post or Edit Content</h3>
-        <select id="target-page">
-          <option value="/guard">/guard</option>
-          <option value="/news">/news (post)</option>
-        </select>
-        <select id="element-type">
-          <option value="p">Paragraph</option>
-          <option value="h1">Header 1</option>
-          <option value="h2">Header 2</option>
-          <option value="h3">Header 3</option>
-          <option value="b">Bold</option>
-          <option value="i">Italic</option>
-          <option value="u">Underline</option>
-          <option value="img">Image</option>
-        </select>
-        <textarea id="element-content" placeholder="Text or image URL..."></textarea>
-        <button class="btn" onclick="addElement()">Add</button>
-      </div>`
-  };
+                <div class="movie-section">
+                    <h2 class="section-title">Continue Watching</h2>
+                    <div class="movie-row" id="continueWatching"></div>
+                </div>
 
-  function render(path) {
-    const app = document.getElementById('app');
-    if (path === '/news') {
-      const posts = JSON.parse(localStorage.getItem('page:/news') || '[]');
-      app.innerHTML = `<h2>News</h2>` + posts.map(post => `<div class="card">${post}</div>`).join('');
-    } else {
-      const html = localStorage.getItem('page:' + path) || defaultPages[path] || defaultPages['/'];
-      app.innerHTML = html;
-    }
-  }
+                <div class="movie-section">
+                    <h2 class="section-title">Trending Now</h2>
+                    <div class="movie-row" id="trendingMovies"></div>
+                </div>
 
-  function navigate(e, path) {
-    e.preventDefault();
-    history.pushState({}, '', path);
-    render(path);
-  }
+                <div class="movie-section">
+                    <h2 class="section-title">Action & Adventure</h2>
+                    <div class="movie-row" id="actionMovies"></div>
+                </div>
 
-  function login() {
-    const email = document.getElementById('email').value.trim();
-    const pass = document.getElementById('pass').value.trim();
-    if (email === 'e@e.e' && pass === 'e') {
-      document.getElementById('login-box').style.display = 'none';
-      document.getElementById('admin-box').style.display = 'block';
-    } else {
-      alert('Invalid login.');
-    }
-  }
+                <div class="movie-section">
+                    <h2 class="section-title">Drama</h2>
+                    <div class="movie-row" id="dramaMovies"></div>
+                </div>
 
-  function addElement() {
-    const page = document.getElementById('target-page').value;
-    const type = document.getElementById('element-type').value;
-    const content = document.getElementById('element-content').value.trim();
-    if (!content) return alert("Content can't be empty.");
-    const el = type === 'img'
-      ? `<img src="${content}" alt="Image">`
-      : `<${type}>${content}</${type}>`;
+                <!-- Master Upload Section -->
+                <div id="masterUpload" class="upload-section" style="display: none;">
+                    <h2 class="section-title">📽️ Upload Movie/Series</h2>
+                    <div class="upload-form">
+                        <div class="form-group">
+                            <label class="form-label">Title</label>
+                            <input type="text" class="form-input" id="movieTitle" placeholder="Movie/Series Title">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Genre</label>
+                            <select class="form-select" id="movieGenre">
+                                <option value="Action">Action</option>
+                                <option value="Drama">Drama</option>
+                                <option value="Comedy">Comedy</option>
+                                <option value="Horror">Horror</option>
+                                <option value="Sci-Fi">Sci-Fi</option>
+                                <option value="Romance">Romance</option>
+                                <option value="Thriller">Thriller</option>
+                                <option value="Documentary">Documentary</option>
+                                <option value="Animation">Animation</option>
+                                <option value="Crime">Crime</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Year</label>
+                            <input type="number" class="form-input" id="movieYear" min="1900" max="2030" placeholder="2024">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Rating (MPAA)</label>
+                            <select class="form-select" id="movieRating">
+                                <option value="G">G</option>
+                                <option value="PG">PG</option>
+                                <option value="PG-13">PG-13</option>
+                                <option value="R">R</option>
+                                <option value="NC-17">NC-17</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Duration (minutes)</label>
+                            <input type="number" class="form-input" id="movieDuration" placeholder="120">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">IMDb Score (1-10)</label>
+                            <input type="number" class="form-input" id="movieScore" min="1" max="10" step="0.1" placeholder="8.5">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Director</label>
+                            <input type="text" class="form-input" id="movieDirector" placeholder="Director Name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Cast</label>
+                            <input type="text" class="form-input" id="movieCast" placeholder="Actor 1, Actor 2, Actor 3">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Image URL</label>
+                            <input type="url" class="form-input" id="movieImage" placeholder="https://example.com/poster.jpg">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-textarea" id="movieDescription" rows="3" placeholder="Movie description..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Type</label>
+                            <select class="form-select" id="movieType">
+                                <option value="movie">Movie</option>
+                                <option value="series">TV Series</option>
+                            </select>
+                        </div>
+                        <button class="upload-btn" onclick="uploadMovie()">🎬 Add to Library</button>
+                    </div>
+                </div>
+            </div>
 
-    if (page === '/news') {
-      let news = JSON.parse(localStorage.getItem('page:/news') || '[]');
-      news.unshift(el);
-      localStorage.setItem('page:/news', JSON.stringify(news));
-    } else {
-      const current = localStorage.getItem('page:' + page) || '';
-      localStorage.setItem('page:' + page, current + `<div class="card">${el}</div>`);
-    }
+            <!-- New Tab -->
+            <div id="new" class="dashboard" style="display: none;">
+                <h1 class="section-title">🆕 New Releases</h1>
+                <div class="movie-row" id="newMovies"></div>
+            </div>
 
-    alert('Content added!');
-    document.getElementById('element-content').value = '';
-  }
+            <!-- Discover Tab -->
+            <div id="discover" class="dashboard" style="display: none;">
+                <h1 class="section-title">🔍 Discover</h1>
+                <div class="movie-section">
+                    <h2 class="section-title">Popular This Week</h2>
+                    <div class="movie-row" id="popularMovies"></div>
+                </div>
+                <div class="movie-section">
+                    <h2 class="section-title">Top Rated</h2>
+                    <div class="movie-row" id="topRatedMovies"></div>
+                </div>
+            </div>
 
-  window.addEventListener('popstate', () => render(location.pathname));
-  window.addEventListener('DOMContentLoaded', () => render(location.pathname));
-</script>
+            <!-- Settings Tab -->
+            <div id="settings" class="dashboard" style="display: none;">
+                <h1 class="section-title">⚙️ Settings</h1>
+                <div class="settings-section">
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <div>
+                                <h3>Auto-play next episode</h3>
+                                <p>Automatically play the next episode when one finishes</p>
+                            </div>
+                            <div class="toggle" onclick="toggleSetting(this)"></div>
+                        </div>
+                        <div class="setting-item">
+                            <div>
+                                <h3>HD Quality</h3>
+                                <p>Stream in high definition when available</p>
+                            </div>
+                            <div class="toggle active" onclick="toggleSetting(this)"></div>
+                        </div>
+                        <div class="setting-item">
+                            <div>
+                                <h3>Show notifications</h3>
+                                <p>Get notified about new releases and recommendations</p>
+                            </div>
+                            <div class="toggle active" onclick="toggleSetting(this)"></div>
+                        </div>
+                        <div class="setting-item">
+                            <div>
+                                <h3>Dark mode</h3>
+                                <p>Use dark theme throughout the app</p>
+                            </div>
+                            <div class="toggle active" onclick="toggleSetting(this)"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Info Tab -->
+            <div id="account" class="dashboard" style="display: none;">
+                <h1 class="section-title">👤 Account Information</h1>
+                <div class="settings-section">
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <div>
+                                <h3>Email</h3>
+                                <p id="userEmail">user@example.com</p>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <div>
+                                <h3>Account Type</h3>
+                                <p id="accountType">Premium</p>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <div>
+                                <h3>Member Since</h3>
+                                <p id="memberSince">January 2024</p>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <div>
+                                <h3>Movies Watched</h3>
+                                <p id="moviesWatched">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Management Tab (Master Only) -->
+            <div id="users" class="dashboard" style="display: none;">
+                <h1 class="section-title">👥 User Management</h1>
+                <div class="settings-section">
+                    <h2 class="section-title">All Users</h2>
+                    <div class="user-list" id="userList"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Movie Modal -->
+    <div class="modal" id="movieModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div class="modal" id="editUserModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeEditUserModal()">&times;</button>
+            <h2>Edit User</h2>
+            <div class="upload-form">
+                <div class="form-group">
+                    <label class="form-label">Name</label>
+                    <input type="text" class="form-input" id="editUserName">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="editUserEmail" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Account Type</label>
+                    <select class="form-select" id="editUserType">
+                        <option value="user">User</option>
+                        <option value="premium">Premium</option>
+                        <option value="master">Master</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">New Password (optional)</label>
+                    <input type="password" class="form-input" id="editUserPassword" placeholder="Leave blank to keep current password">
+                </div>
+                <button class="upload-btn" onclick="saveUserChanges()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentEditingUser = null;
+
+        // Initialize app
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('loadingScreen').style.display = 'none';
+                }, 500);
+            }, 1500);
+            
+            initializeApp();
+        });
+
+        // Initialize master account and real movie data
+        function initializeApp() {
+            // Create master account if it doesn't exist
+            if (!localStorage.getItem('users')) {
+                const users = {
+                    'master@master.com': {
+                        password: 'Master12!',
+                        name: 'Master Admin',
+                        type: 'master',
+                        memberSince: 'January 2024',
+                        moviesWatched: 0
+                    }
+                };
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+
+            // Initialize real movies if none exist
+            if (!localStorage.getItem('movies')) {
+                const realMovies = [
+                    {
+                        id: 1,
+                        title: 'The Dark Knight',
+                        genre: 'Action',
+                        year: 2008,
+                        rating: 'PG-13',
+                        duration: 152,
+                        score: 9.0,
+                        director: 'Christopher Nolan',
+                        cast: 'Christian Bale, Heath Ledger, Aaron Eckhart, Michael Caine',
+                        image: 'https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_SX300.jpg',
+                        description: 'When the menace known as The Joker emerges from his mysterious past, he wreaks havoc and chaos on the people of Gotham.',
+                        type: 'movie',
+                        addedBy: 'system'
+                    },
+                    {
+                        id: 2,
+                        title: 'Inception',
+                        genre: 'Sci-Fi',
+                        year: 2010,
+                        rating: 'PG-13',
+                        duration: 148,
+                        score: 8.8,
+                        director: 'Christopher Nolan',
+                        cast: 'Leonardo DiCaprio, Marion Cotillard, Tom Hardy, Ellen Page',
+                        image: 'https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg',
+                        description: 'A thief who steals corporate secrets through dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.',
+                        type: 'movie',
+                        addedBy: 'system'
+                    },
+                    {
+                        id: 3,
+                        title: 'The Godfather',
+                        genre: 'Drama',
+                        year: 1972,
+                        rating: 'R',
+                        duration: 175,
+                        score: 9.2,
+                        director: 'Francis Ford Coppola',
+                        cast: 'Marlon Brando, Al Pacino, James Caan, Robert Duvall',
+                        image: 'https://m.media-amazon.com/images/M/MV5BM2MyNjYxNmUtYTAwNi00MTYxLWJmNWYtYzZlODY3ZTk3OTFlXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg',
+                        description: 'The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.',
+                        type: 'movie',
+                        addedBy: 'system'
+                    },
+                    {
+                        id: 4,
+                        title: 'Pulp Fiction',
+                        genre: 'Crime',
+                        year: 1994,
+                        rating: 'R',
+                        duration: 154,
+                        score: 8.9,
+                        director: 'Quentin Tarantino',
+                        cast: 'John Travolta, Uma Thurman, Samuel L. Jackson, Bruce Willis',
+                        image: 'https://m.media-amazon.com/images/M/MV5BNGNhMDIzZTUtNTBlZi00MTRlLWFjM2ItYzViMjE3YzI5MjljXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg',
+                        description: 'The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.',
+                        type: 'movie',
+                        addedBy: 'system'
+                    },
+                    {
+                        id: 5,
+                        title: 'The Shawshank Redemption',
+                        genre: 'Drama',
+                        year: 1994,
+                        rating: 'R',
+                        duration: 142,
+                        score: 9.3,
+                        director: 'Frank Darabont',
+                        cast: 'Tim Robbins, Morgan Freeman, Bob Gunton, William Sadler',
+                        image: 'https://m.media-amazon.com/images/M/MV5BNDE3ODcxYzMtY2YzZC00NmNlLWJiNDMtZDViZWM2MzIxZDYwXkEyXkFqcGdeQXVyNjAwNDUxODI@._V1_SX300.jpg',
+                        description: 'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.',
+                        type: 'movie',
+                        addedBy: 'system'
+                    },
+                    {
+                        id: 6,
+                        title: 'Interstellar',
+                        genre: 'Sci-Fi',
+                        year: 2014,
+                        rating: 'PG-13',
+                        duration: 169,
+                        score: 8.6,
+                        director: 'Christopher Nolan',
+                        cast: 'Matthew McConaughey, Anne Hathaway, Jessica Chastain, Michael Caine',
+                        image: 'https://m.media-amazon.com/images/M/MV5BZjdkOTU3MDktN2IxOS00OGEyLWFmMjktY2FiMmZkNWIyODZiXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SX300.jpg',
+                        description: 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity\'s survival.',
+                        type: 'movie',
+                        addedBy: 'system'
+                    },
+                    {
+                        id: 7,
+                        title: 'Breaking Bad',
+                        genre: 'Drama',
+                        year: 2008,
+                        rating: 'TV-MA',
+                        duration: 47,
+                        score: 9.5,
+                        director: 'Vince Gilligan',
+                        cast: 'Bryan Cranston, Aaron Paul, Anna Gunn, Dean Norris',
+                        image: 'https://m.media-amazon.com/images/M/MV5BMjhiMzgxZTctNDc1Ni00OTIxLTlhMTYtZTA3ZWFkODRkNmFmXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg',
+                        description: 'A high school chemistry teacher diagnosed with inoperable lung cancer turns to manufacturing and selling methamphetamine in order to secure his family\'s future.',
+                        type: 'series',
+                        addedBy: 'system'
+                    },
+                    {
+                        id: 8,
+                        title: 'The Matrix',
+                        genre: 'Sci-Fi',
+                        year: 1999,
+                        rating: 'R',
+                        duration: 136,
+                        score: 8.7,
+                        director: 'Lana Wachowski, Lilly Wachowski',
+                        cast: 'Keanu Reeves, Laurence Fishburne, Carrie-Anne Moss, Hugo Weaving',
+                        image: 'https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SX300.jpg',
+                        description: 'A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.',
+                        type: 'movie',
+                        addedBy: 'system'
+                    },
+                    {
+                        id: 9,
+                        title: 'Forrest Gump',
+                        genre: 'Drama',
+                        year: 1994,
+                        rating: 'PG-13',
+                        duration: 142,
+                        score: 8.8,
+                        director: 'Robert Zemeckis',
+                        cast: 'Tom Hanks, Robin Wright, Gary Sinise, Sally Field',
+                        image: 'https://m.media-amazon.com/images/M/MV5BNWIwODRlZTUtY2U3ZS00Yzg1LWJhNzYtMmZiYmEyNmU1NjMzXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg',
+                        description: 'The presidencies of Kennedy and Johnson, the Vietnam War, the Watergate scandal and other historical events unfold from the perspective of an Alabama man with an IQ of 75.',
+                        type: 'movie',
+                        addedBy: 'system'
+                    },
+                    {
+                        id: 10,
+                        title: 'Goodfellas',
+                        genre: 'Crime',
+                        year: 1990,
+                        rating: 'R',
+                        duration: 146,
+                        score: 8.7,
+                        director: 'Martin Scorsese',
+                        cast: 'Robert De Niro, Ray Liotta, Joe Pesci, Lorraine Bracco',
+                        image: 'https://m.media-amazon.com/images/M/MV5BY2NkZjEzMDgtN2RjYy00YzM1LWI4ZmQtMjA4YTQyYzc1MTEwXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg',
+                        description: 'The story of Henry Hill and his life in the mob, covering his relationship with his wife Karen Hill and his mob partners Jimmy Conway and Tommy DeVito.',
+                        type: 'movie',
+                        addedBy: 'system'
+                    }
+                ];
+                localStorage.setItem('movies', JSON.stringify(realMovies));
+            }
+        }
+
+        // Authentication functions
+        function showSignup() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('signupForm').style.display = 'block';
+        }
+
+        function showLogin() {
+            document.getElementById('signupForm').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+        }
+
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            
+            if (users[email] && users[email].password === password) {
+                localStorage.setItem('currentUser', JSON.stringify({
+                    email: email,
+                    ...users[email]
+                }));
+                
+                showMainApp();
+            } else {
+                alert('Invalid email or password');
+            }
+        }
+
+        function signup() {
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            
+            if (!name || !email || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            
+            if (users[email]) {
+                alert('Email already exists');
+                return;
+            }
+
+            users[email] = {
+                name: name,
+                password: password,
+                type: 'user',
+                memberSince: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+                moviesWatched: 0
+            };
+            
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify({
+                email: email,
+                ...users[email]
+            }));
+            
+            showMainApp();
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('authScreen').style.display = 'flex';
+            showLogin();
+        }
+
+        function showMainApp() {
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            
+            // Update profile button
+            document.getElementById('profileBtn').textContent = currentUser.name.charAt(0).toUpperCase();
+            
+            // Show master features if master user
+            if (currentUser.type === 'master') {
+                document.getElementById('masterUpload').style.display = 'block';
+                document.getElementById('userManagementTab').style.display = 'block';
+            }
+            
+            // Update account info
+            document.getElementById('userEmail').textContent = currentUser.email;
+            document.getElementById('accountType').textContent = currentUser.type === 'master' ? 'Master Account' : 'Premium';
+            document.getElementById('memberSince').textContent = currentUser.memberSince;
+            document.getElementById('moviesWatched').textContent = currentUser.moviesWatched;
+            
+            loadMovies();
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            const tabs = ['home', 'new', 'discover', 'settings', 'account', 'users'];
+            tabs.forEach(tab => {
+                const element = document.getElementById(tab);
+                if (element) element.style.display = 'none';
+            });
+            
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected tab and add active class
+            document.getElementById(tabName).style.display = 'block';
+            event.target.classList.add('active');
+            
+            // Load content based on tab
+            if (tabName === 'new') {
+                loadNewMovies();
+            } else if (tabName === 'discover') {
+                loadDiscoverMovies();
+            } else if (tabName === 'users') {
+                loadUserManagement();
+            }
+        }
+
+        // Movie management
+        function loadMovies() {
+            const movies = JSON.parse(localStorage.getItem('movies') || '[]');
+            
+            // Load different categories
+            loadMovieRow('trendingMovies', movies.slice(0, 8));
+            loadMovieRow('actionMovies', movies.filter(m => m.genre === 'Action'));
+            loadMovieRow('dramaMovies', movies.filter(m => m.genre === 'Drama'));
+            loadContinueWatching();
+        }
+
+        function loadNewMovies() {
+            const movies = JSON.parse(localStorage.getItem('movies') || '[]');
+            const newMovies = movies.sort((a, b) => b.year - a.year);
+            loadMovieRow('newMovies', newMovies);
+        }
+
+        function loadDiscoverMovies() {
+            const movies = JSON.parse(localStorage.getItem('movies') || '[]');
+            loadMovieRow('popularMovies', movies.sort((a, b) => b.score - a.score));
+            loadMovieRow('topRatedMovies', movies.filter(m => m.score >= 8.5));
+        }
+
+        function loadMovieRow(containerId, movies) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            container.innerHTML = movies.map(movie => `
+                <div class="movie-card" onclick="openMovie(${movie.id})">
+                    <div class="movie-poster">
+                        ${movie.image ? `<img src="${movie.image}" alt="${movie.title}" onerror="this.style.display='none'; this.parentElement.innerHTML='${movie.type === 'series' ? '📺' : '🎬'}';"/>` : (movie.type === 'series' ? '📺' : '🎬')}
+                        <div class="movie-rating">⭐ ${movie.score || 'N/A'}</div>
+                    </div>
+                    <div class="movie-info">
+                        <div class="movie-title">${movie.title}</div>
+                        <div class="movie-genre">${movie.genre} • ${movie.year}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadContinueWatching() {
+            const watchedMovies = JSON.parse(localStorage.getItem('watchedMovies') || '[]');
+            const movies = JSON.parse(localStorage.getItem('movies') || '[]');
+            const continueWatching = movies.filter(movie => 
+                watchedMovies.some(watched => watched.id === movie.id && watched.progress < 100)
+            ).slice(0, 6);
+            
+            loadMovieRow('continueWatching', continueWatching);
+        }
+
+        function uploadMovie() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser.type !== 'master') {
+                alert('Only master accounts can upload movies');
+                return;
+            }
+
+            const title = document.getElementById('movieTitle').value;
+            const genre = document.getElementById('movieGenre').value;
+            const year = document.getElementById('movieYear').value;
+            const rating = document.getElementById('movieRating').value;
+            const duration = document.getElementById('movieDuration').value;
+            const score = document.getElementById('movieScore').value;
+            const director = document.getElementById('movieDirector').value;
+            const cast = document.getElementById('movieCast').value;
+            const image = document.getElementById('movieImage').value;
+            const description = document.getElementById('movieDescription').value;
+            const type = document.getElementById('movieType').value;
+
+            if (!title || !genre || !year || !duration || !description || !director || !cast || !score) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            const movies = JSON.parse(localStorage.getItem('movies') || '[]');
+            const newMovie = {
+                id: Date.now(),
+                title,
+                genre,
+                year: parseInt(year),
+                rating,
+                duration: parseInt(duration),
+                score: parseFloat(score),
+                director,
+                cast,
+                image: image || '',
+                description,
+                type,
+                addedBy: currentUser.email
+            };
+
+            movies.push(newMovie);
+            localStorage.setItem('movies', JSON.stringify(movies));
+
+            // Clear form
+            document.getElementById('movieTitle').value = '';
+            document.getElementById('movieDescription').value = '';
+            document.getElementById('movieYear').value = '';
+            document.getElementById('movieDuration').value = '';
+            document.getElementById('movieScore').value = '';
+            document.getElementById('movieDirector').value = '';
+            document.getElementById('movieCast').value = '';
+            document.getElementById('movieImage').value = '';
+
+            alert('Movie/Series added successfully!');
+            loadMovies();
+        }
+
+        function openMovie(movieId) {
+            const movies = JSON.parse(localStorage.getItem('movies') || '[]');
+            const movie = movies.find(m => m.id === movieId);
+            
+            if (!movie) return;
+
+            const stars = '⭐'.repeat(Math.floor(movie.score || 0)) + (movie.score % 1 >= 0.5 ? '⭐' : '');
+            
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = `
+                <div class="movie-details">
+                    <div class="movie-poster-large">
+                        ${movie.image ? `<img src="${movie.image}" alt="${movie.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;" onerror="this.style.display='none'; this.parentElement.innerHTML='${movie.type === 'series' ? '📺' : '🎬'}';"/>` : (movie.type === 'series' ? '📺' : '🎬')}
+                    </div>
+                    <div class="movie-meta">
+                        <h2>${movie.title} (${movie.year})</h2>
+                        <div style="display: flex; gap: 1rem; margin: 1rem 0; flex-wrap: wrap;">
+                            <span style="background: var(--primary-color); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">${movie.rating}</span>
+                            <span>${movie.duration} min</span>
+                            <span>${movie.genre}</span>
+                            <span>${movie.type === 'series' ? 'TV Series' : 'Movie'}</span>
+                        </div>
+                        <div class="rating-stars" style="font-size: 1.2rem;">
+                            ${stars} ${movie.score || 'N/A'}/10
+                        </div>
+                        <p><strong>Director:</strong> ${movie.director || 'Unknown'}</p>
+                        <p><strong>Cast:</strong> ${movie.cast || 'Unknown'}</p>
+                    </div>
+                </div>
+                <p style="margin: 1rem 0; line-height: 1.6;">${movie.description}</p>
+                <div style="display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;">
+                    <button class="play-btn" onclick="playMovie(${movie.id})">▶ Play</button>
+                    <button class="info-btn" onclick="addToWatchlist(${movie.id})">+ Watchlist</button>
+                    ${JSON.parse(localStorage.getItem('currentUser')).type === 'master' ? `<button class="info-btn" onclick="editMovie(${movie.id})">✏️ Edit</button>` : ''}
+                </div>
+            `;
+            
+            document.getElementById('movieModal').classList.add('active');
+        }
+
+        function editMovie(movieId) {
+            const movies = JSON.parse(localStorage.getItem('movies') || '[]');
+            const movie = movies.find(m => m.id === movieId);
+            
+            if (!movie) return;
+
+            // Populate form with current movie data
+            document.getElementById('movieTitle').value = movie.title;
+            document.getElementById('movieGenre').value = movie.genre;
+            document.getElementById('movieYear').value = movie.year;
+            document.getElementById('movieRating').value = movie.rating;
+            document.getElementById('movieDuration').value = movie.duration;
+            document.getElementById('movieScore').value = movie.score;
+            document.getElementById('movieDirector').value = movie.director || '';
+            document.getElementById('movieCast').value = movie.cast || '';
+            document.getElementById('movieImage').value = movie.image || '';
+            document.getElementById('movieDescription').value = movie.description;
+            document.getElementById('movieType').value = movie.type;
+
+            // Remove existing movie
+            const updatedMovies = movies.filter(m => m.id !== movieId);
+            localStorage.setItem('movies', JSON.stringify(updatedMovies));
+
+            closeModal();
+            switchTab('home');
+            alert('Movie loaded in form for editing. Update the details and click "Add to Library" to save changes.');
+        }
+
+        function closeModal() {
+            document.getElementById('movieModal').classList.remove('active');
+        }
+
+        function playMovie(movieId) {
+            const watchedMovies = JSON.parse(localStorage.getItem('watchedMovies') || '[]');
+            const existingWatch = watchedMovies.find(w => w.id === movieId);
+            
+            if (existingWatch) {
+                existingWatch.progress = Math.min(100, existingWatch.progress + 25);
+            } else {
+                watchedMovies.push({
+                    id: movieId,
+                    progress: 25,
+                    lastWatched: new Date().toISOString()
+                });
+            }
+            
+            localStorage.setItem('watchedMovies', JSON.stringify(watchedMovies));
+            
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            currentUser.moviesWatched = (currentUser.moviesWatched || 0) + 1;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            const users = JSON.parse(localStorage.getItem('users'));
+            users[currentUser.email].moviesWatched = currentUser.moviesWatched;
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            alert('Now playing: ' + JSON.parse(localStorage.getItem('movies')).find(m => m.id === movieId).title);
+            closeModal();
+            loadContinueWatching();
+        }
+
+        function addToWatchlist(movieId) {
+            const watchlist = JSON.parse(localStorage.getItem('watchlist') || '[]');
+            if (!watchlist.includes(movieId)) {
+                watchlist.push(movieId);
+                localStorage.setItem('watchlist', JSON.stringify(watchlist));
+                alert('Added to watchlist!');
+            } else {
+                alert('Already in watchlist!');
+            }
+        }
+
+        function toggleSetting(element) {
+            element.classList.toggle('active');
+        }
+
+        // User Management Functions
+        function loadUserManagement() {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            const userList = document.getElementById('userList');
+            
+            userList.innerHTML = Object.entries(users).map(([email, user]) => `
+                <div class="user-item">
+                    <div class="user-info">
+                        <div class="user-email">${email}</div>
+                        <div class="user-type">${user.name} - ${user.type}</div>
+                    </div>
+                    <div class="user-actions">
+                        <button class="btn-small btn-edit" onclick="editUser('${email}')">Edit</button>
+                        ${email !== 'master@master.com' ? `<button class="btn-small btn-delete" onclick="deleteUser('${email}')">Delete</button>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function editUser(email) {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            const user = users[email];
+            
+            if (!user) return;
+
+            currentEditingUser = email;
+            document.getElementById('editUserName').value = user.name;
+            document.getElementById('editUserEmail').value = email;
+            document.getElementById('editUserType').value = user.type;
+            document.getElementById('editUserPassword').value = '';
+            
+            document.getElementById('editUserModal').classList.add('active');
+        }
+
+        function closeEditUserModal() {
+            document.getElementById('editUserModal').classList.remove('active');
+            currentEditingUser = null;
+        }
+
+        function saveUserChanges() {
+            if (!currentEditingUser) return;
+
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            const name = document.getElementById('editUserName').value;
+            const type = document.getElementById('editUserType').value;
+            const password = document.getElementById('editUserPassword').value;
+
+            if (!name) {
+                alert('Name is required');
+                return;
+            }
+
+            users[currentEditingUser].name = name;
+            users[currentEditingUser].type = type;
+            
+            if (password) {
+                users[currentEditingUser].password = password;
+            }
+
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            // Update current user if editing self
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser.email === currentEditingUser) {
+                currentUser.name = name;
+                currentUser.type = type;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            }
+
+            closeEditUserModal();
+            loadUserManagement();
+            alert('User updated successfully!');
+        }
+
+        function deleteUser(email) {
+            if (email === 'master@master.com') {
+                alert('Cannot delete master account');
+                return;
+            }
+
+            if (confirm(`Are you sure you want to delete user: ${email}?`)) {
+                const users = JSON.parse(localStorage.getItem('users') || '{}');
+                delete users[email];
+                localStorage.setItem('users', JSON.stringify(users));
+                loadUserManagement();
+                alert('User deleted successfully!');
+            }
+        }
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Auto-login if user exists
+        window.addEventListener('DOMContentLoaded', () => {
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                showMainApp();
+            }
+        });
+
+        // Close modals when clicking outside
+        document.getElementById('movieModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('movieModal')) {
+                closeModal();
+            }
+        });
+
+        document.getElementById('editUserModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('editUserModal')) {
+                closeEditUserModal();
+            }
+        });
+    </script>
 </body>
 </html>
