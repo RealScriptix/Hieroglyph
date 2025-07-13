@@ -771,13 +771,13 @@
         <main class="main-content">
             <!-- Home Tab -->
             <div id="home" class="dashboard fade-in">
-                <div class="hero-section">
+                <div class="hero-section" id="heroSection">
                     <div class="hero-content">
-                        <h1 class="hero-title">Welcome to Hieroglyph</h1>
-                        <p class="hero-description">Your premium streaming destination. Start by adding movies to your library.</p>
+                        <h1 class="hero-title" id="heroTitle">Featured Movie</h1>
+                        <p class="hero-description" id="heroDescription">Experience premium streaming with our curated collection of movies and series.</p>
                         <div class="hero-buttons">
-                            <button class="play-btn" onclick="switchTab('management')">Browse Library</button>
-                            <button class="info-btn" onclick="switchTab('settings')">Settings</button>
+                            <button class="play-btn" id="heroPlayBtn" onclick="playFeaturedMovie()">▶ Play</button>
+                            <button class="info-btn" id="heroInfoBtn" onclick="openFeaturedMovie()">ℹ More Info</button>
                         </div>
                     </div>
                 </div>
@@ -794,43 +794,43 @@
 
                 <div class="movie-section">
                     <h2 class="section-title">Recently Added</h2>
-                    <div class="movie-row" id="recentMovies">
-                        <div class="empty-state">
-                            <h3>No movies added yet</h3>
-                            <p>Add movies using the management panel</p>
-                        </div>
-                    </div>
+                    <div class="movie-row" id="recentMovies"></div>
                 </div>
 
                 <div class="movie-section">
                     <h2 class="section-title">Action & Adventure</h2>
-                    <div class="movie-row" id="actionMovies">
-                        <div class="empty-state">
-                            <h3>No action movies</h3>
-                            <p>Add action movies to see them here</p>
-                        </div>
-                    </div>
+                    <div class="movie-row" id="actionMovies"></div>
                 </div>
 
                 <div class="movie-section">
                     <h2 class="section-title">Drama</h2>
-                    <div class="movie-row" id="dramaMovies">
-                        <div class="empty-state">
-                            <h3>No drama movies</h3>
-                            <p>Add drama movies to see them here</p>
-                        </div>
-                    </div>
+                    <div class="movie-row" id="dramaMovies"></div>
+                </div>
+
+                <div class="movie-section">
+                    <h2 class="section-title">Sci-Fi</h2>
+                    <div class="movie-row" id="sciFiMovies"></div>
+                </div>
+
+                <div class="movie-section">
+                    <h2 class="section-title">Comedy</h2>
+                    <div class="movie-row" id="comedyMovies"></div>
                 </div>
             </div>
 
             <!-- New Tab -->
             <div id="new" class="dashboard" style="display: none;">
                 <h1 class="section-title">🆕 New Releases</h1>
-                <div class="movie-row" id="newMovies">
-                    <div class="empty-state">
-                        <h3>No new releases</h3>
-                        <p>Add movies to see the latest releases here</p>
-                    </div>
+                <div class="movie-row" id="newMovies"></div>
+                
+                <div class="movie-section">
+                    <h2 class="section-title">Latest Movies</h2>
+                    <div class="movie-row" id="latestMovies"></div>
+                </div>
+                
+                <div class="movie-section">
+                    <h2 class="section-title">New Series</h2>
+                    <div class="movie-row" id="newSeries"></div>
                 </div>
             </div>
 
@@ -838,22 +838,20 @@
             <div id="discover" class="dashboard" style="display: none;">
                 <h1 class="section-title">🔍 Discover</h1>
                 <div class="movie-section">
-                    <h2 class="section-title">Popular This Week</h2>
-                    <div class="movie-row" id="popularMovies">
-                        <div class="empty-state">
-                            <h3>No popular movies</h3>
-                            <p>Movies will appear here based on viewing activity</p>
-                        </div>
-                    </div>
+                    <h2 class="section-title">Top Rated Movies</h2>
+                    <div class="movie-row" id="topRatedMovies"></div>
                 </div>
                 <div class="movie-section">
-                    <h2 class="section-title">Top Rated</h2>
-                    <div class="movie-row" id="topRatedMovies">
-                        <div class="empty-state">
-                            <h3>No rated movies</h3>
-                            <p>Add movies with ratings to see them here</p>
-                        </div>
-                    </div>
+                    <h2 class="section-title">Popular This Week</h2>
+                    <div class="movie-row" id="popularMovies"></div>
+                </div>
+                <div class="movie-section">
+                    <h2 class="section-title">All Time Classics</h2>
+                    <div class="movie-row" id="classicMovies"></div>
+                </div>
+                <div class="movie-section">
+                    <h2 class="section-title">Trending Series</h2>
+                    <div class="movie-row" id="trendingSeries"></div>
                 </div>
             </div>
 
@@ -956,6 +954,12 @@
                                 <option value="Romance">Romance</option>
                                 <option value="Thriller">Thriller</option>
                                 <option value="Documentary">Documentary</option>
+                                <option value="Crime">Crime</option>
+                                <option value="Fantasy">Fantasy</option>
+                                <option value="Mystery">Mystery</option>
+                                <option value="Adventure">Adventure</option>
+                                <option value="Animation">Animation</option>
+                                <option value="Biography">Biography</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -1107,9 +1111,291 @@
                 localStorage.setItem('users', JSON.stringify(users));
             }
 
-            // Initialize empty movies array
+            // Initialize with real movies if none exist
             if (!localStorage.getItem('movies')) {
-                localStorage.setItem('movies', JSON.stringify([]));
+                const realMovies = [
+                    {
+                        id: 1,
+                        title: 'Avatar: The Way of Water',
+                        genre: 'Action',
+                        year: 2022,
+                        rating: 'PG-13',
+                        duration: 192,
+                        imdbRating: 7.6,
+                        description: 'Jake Sully lives with his newfound family formed on the planet of Pandora. Once a familiar threat returns to finish what was previously started, Jake must work with Neytiri and the army of the Na\'vi race to protect their planet.',
+                        type: 'movie',
+                        poster: 'https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg',
+                        addedBy: 'system',
+                        addedDate: '2024-01-15T00:00:00.000Z'
+                    },
+                    {
+                        id: 2,
+                        title: 'Top Gun: Maverick',
+                        genre: 'Action',
+                        year: 2022,
+                        rating: 'PG-13',
+                        duration: 130,
+                        imdbRating: 8.3,
+                        description: 'After thirty years, Maverick is still pushing the envelope as a top naval aviator, but must confront ghosts of his past when he leads TOP GUN\'s elite graduates on a mission that demands the ultimate sacrifice from those chosen to fly it.',
+                        type: 'movie',
+                        poster: 'https://image.tmdb.org/t/p/w500/62HCnUTziyWcpDaBO2i1DX17ljH.jpg',
+                        addedBy: 'system',
+                        addedDate: '2024-01-10T00:00:00.000Z'
+                    },
+                    {
+                        id: 3,
+                        title: 'The Batman',
+                        genre: 'Action',
+                        year: 2022,
+                        rating: 'PG-13',
+                        duration: 176,
+                        imdbRating: 7.8,
+                        description: 'When the Riddler, a sadistic serial killer, begins murdering key political figures in Gotham, Batman is forced to investigate the city\'s hidden corruption and question his family\'s involvement.',
+                        type: 'movie',
+                        poster: 'https://image.tmdb.org/t/p/w500/b0PlSFdDwbyK0cf5RxwDpaOJQvQ.jpg',
+                        addedBy: 'system',
+                        addedDate: '2024-01-12T00:00:00.000Z'
+                    },
+                    {
+                        id: 4,
+                        title: 'Spider-Man: No Way Home',
+                        genre: 'Action',
+                        year: 2021,
+                        rating: 'PG-13',
+                        duration: 148,
+                        imdbRating: 8.2,
+                        description: 'With Spider-Man\'s identity now revealed, Peter asks Doctor Strange for help. When a spell goes wrong, dangerous foes from other worlds start to appear, forcing Peter to discover what it truly means to be Spider-Man.',
+                        type: 'movie',
+                        poster: 'https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg',
+                        addedBy: 'system',
+                        addedDate: '2024-01-08T00:00:00.000Z'
+                    },
+                    {
+                        id: 5,
+                        title: 'Dune',
+                        genre: 'Sci-Fi',
+                        year: 2021,
+                        rating: 'PG-13',
+                        duration: 155,
+                        imdbRating: 8.0,
+                        description: 'Paul Atreides, a brilliant and gifted young man born into a great destiny beyond his understanding, must travel to the most dangerous planet in the universe to ensure the future of his family and his people.',
+                        type: 'movie',
+                        poster: 'https://image.tmdb.org/t/p/w500/d5NXSklXo0qyIYkgV94XAgMIckC.jpg',
+                        addedBy: 'system',
+                        addedDate: '2024-01-14T00:00:00.000Z'
+                    },
+                    {
+                        id: 6,
+                        title: 'Stranger Things',
+                        genre: 'Sci-Fi',
+                        year: 2022,
+                        rating: 'TV-14',
+                        duration: 50,
+                        imdbRating: 8.7,
+                        description: 'When a young boy vanishes, a small town uncovers a mystery involving secret experiments, terrifying supernatural forces, and one strange little girl.',
+                        type: 'series',
+                        poster: 'https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg',
+                        addedBy: 'system',
+                        addedDate: '2024-01-11T00:00:00.000Z'
+                    },
+                    {
+                        id: 7,
+                        title: 'The Godfather',
+                        genre: 'Drama',
+                        year: 1972,
+                        rating: 'R',
+                        duration: 175,
+                        imdbRating: 9.2,
+                        description: 'The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.',
+                        type: 'movie',
+                        poster: 'https://image.tmdb.org/t/p/w500/3bhkrj58Vtu7enYsRolD1fZdja1.jpg',
+                        addedBy: 'system',
+                        addedDate: '2024-01-05T00:00:00.000Z'
+                    },
+                    {
+                        id: 8,
+                        title: 'Forrest Gump',
+                        genre: 'Drama',
+                        year: 1994,
+                        rating: 'PG-13',
+                        duration: 142,
+                        imdbRating: 8.8,
+                        description: 'The presidencies of Kennedy and Johnson, the events of Vietnam, Watergate, and other history unfold through the perspective of an Alabama man with an IQ of 75.',
+                        type: 'movie',
+                        poster: 'https://image.tmdb.org/t/p/w500/arw2vcBveWOVZr6pxd9XTd1TdQa.jpg',
+                        addedBy: 'system',
+                        addedDate: '2024-01-06T00:00:00.000Z'
+                    },
+                    {
+                        id: 9,
+                        title: 'The Shawshank Redemption',
+                        genre: 'Drama',
+                        year: 1994,
+                        rating: 'R',
+                        duration: 142,
+                        imdbRating: 9.3,
+                        description: 'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.',
+                        type: 'movie',
+                        poster: 'https://image.tmdb.org/t/p/w500/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg',
+                        addedBy: 'system',
+                        addedDate: '2024-01-07T00:00:00.000Z'
+                    },
+                    {
+                        id: 10,
+                        title: 'Inception',
+                        genre: 'Sci-Fi',
+                        year: 2010,
+                        rating: 'PG-13',
+                        duration: 148,
+                        imdbRating: 8.8,
+                        description: 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.',
+                        type: 'movie',
+                        poster: 'https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg',
+                        addedBy: 'system',
+                        addedDate: '2024-01-09T00:00:00.000Z'
+                    },
+                    {
+                        id: 11,
+                        title: 'Avengers: Endgame',
+                        genre: 'Action',
+                        year: 2019,
+                        rating: 'PG-13',
+                        duration: 181,
+                        imdbRating: 8.4,
+                        description: 'After the devastating events of Avengers: Infinity War, the universe is in ruins. With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos\' actions and restore balance to the universe.',
+                        type: 'movie',
+                        poster: 'https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg',
+                        addedBy: 'system',
+                        addedDate: '2024-01-13T00:00:00.000Z'
+                    },
+                    {
+                        id: 12,
+                        title: 'The Dark Knight',
+                        genre: 'Action',
+                        year: 2008,
+                        rating: 'PG-13',
+                        duration: 152,
+                        imdbRating: 9.0,
+                        description: 'When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.',
+                        type: 'movie',
+                        poster: 'https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg',
+                        addedBy: 'system',
+                        addedDate: '2024-01-04T00:00:00.000Z'
+                    },
+                    {
+                        id: 13,
+                        title: 'Pulp Fiction',
+                        genre: 'Drama',
+                        year: 1994,
+                        rating: 'R',
+                        duration: 154,
+                        imdbRating: 8.9,
+                        description: 'The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.',
+                        type: 'movie',
+                        poster: 'https://image.tmdb.org/t/p/w500/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg',
+                        addedBy: 'system',
+                        addedDate: '2024-01-03T00:00:00.000Z'
+                    },
+                    {
+                        id: 14,
+                        title: 'Interstellar',
+                        genre: 'Sci-Fi',
+                        year: 2014,
+                        rating: 'PG-13',
+                        duration: 169,
+                        imdbRating: 8.6,
+                        description: 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity\'s survival.',
+                        type: 'movie',
+                        poster: 'https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg',
+                        addedBy: 'system',
+                        addedDate: '2024-01-02T00:00:00.000Z'
+                    },
+                    {
+                        id: 15,
+                        title: 'The Matrix',
+                        genre: 'Sci-Fi',
+                        year: 1999,
+                        rating: 'R',
+                        duration: 136,
+                        imdbRating: 8.7,
+                        description: 'A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.',
+                        type: 'movie',
+                        poster: 'https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg',
+                        addedBy: 'system',
+                        addedDate: '2024-01-01T00:00:00.000Z'
+                    },
+                    {
+                        id: 16,
+                        title: 'The Office',
+                        genre: 'Comedy',
+                        year: 2009,
+                        rating: 'TV-14',
+                        duration: 22,
+                        imdbRating: 8.9,
+                        description: 'A mockumentary on a group of typical office workers, where the workday consists of ego clashes, inappropriate behavior, and tedium.',
+                        type: 'series',
+                        poster: 'https://image.tmdb.org/t/p/w500/7DJKHzAi83UmjbQnFahM2u2B2Z7.jpg',
+                        addedBy: 'system',
+                        addedDate: '2024-01-16T00:00:00.000Z'
+                    },
+                    {
+                        id: 17,
+                        title: 'Breaking Bad',
+                        genre: 'Drama',
+                        year: 2013,
+                        rating: 'TV-MA',
+                        duration: 47,
+                        imdbRating: 9.5,
+                        description: 'A high school chemistry teacher diagnosed with inoperable lung cancer turns to manufacturing and selling methamphetamine in order to secure his family\'s future.',
+                        type: 'series',
+                        poster: 'https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg',
+                        addedBy: 'system',
+                        addedDate: '2024-01-17T00:00:00.000Z'
+                    },
+                    {
+                        id: 18,
+                        title: 'Game of Thrones',
+                        genre: 'Drama',
+                        year: 2019,
+                        rating: 'TV-MA',
+                        duration: 57,
+                        imdbRating: 9.2,
+                        description: 'Nine noble families fight for control over the lands of Westeros, while an ancient enemy returns after being dormant for millennia.',
+                        type: 'series',
+                        poster: 'https://image.tmdb.org/t/p/w500/u3bZgnGQ9T01sWNhyveQz0wH0Hl.jpg',
+                        addedBy: 'system',
+                        addedDate: '2024-01-18T00:00:00.000Z'
+                    },
+                    {
+                        id: 19,
+                        title: 'Goodfellas',
+                        genre: 'Drama',
+                        year: 1990,
+                        rating: 'R',
+                        duration: 146,
+                        imdbRating: 8.7,
+                        description: 'The story of Henry Hill and his life in the mob, covering his relationship with his wife Karen Hill and his mob partners Jimmy Conway and Tommy DeVito.',
+                        type: 'movie',
+                        poster: 'https://image.tmdb.org/t/p/w500/aKuFiU82s5ISJpGZp7YkIr3kCUd.jpg',
+                        addedBy: 'system',
+                        addedDate: '2024-01-19T00:00:00.000Z'
+                    },
+                    {
+                        id: 20,
+                        title: 'Schindler\'s List',
+                        genre: 'Drama',
+                        year: 1993,
+                        rating: 'R',
+                        duration: 195,
+                        imdbRating: 8.9,
+                        description: 'In German-occupied Poland during World War II, industrialist Oskar Schindler gradually becomes concerned for his Jewish workforce after witnessing their persecution by the Nazis.',
+                        type: 'movie',
+                        poster: 'https://image.tmdb.org/t/p/w500/sF1U4EUQS8YHUYjNl3pMGNIQyr0.jpg',
+                        addedBy: 'system',
+                        addedDate: '2024-01-20T00:00:00.000Z'
+                    }
+                ];
+                localStorage.setItem('movies', JSON.stringify(realMovies));
             }
 
             // Initialize default settings
@@ -1278,7 +1564,9 @@
             event.target.classList.add('active');
             
             // Load content based on tab
-            if (tabName === 'new') {
+            if (tabName === 'home') {
+                loadMovies();
+            } else if (tabName === 'new') {
                 loadNewMovies();
             } else if (tabName === 'discover') {
                 loadDiscoverMovies();
@@ -1321,24 +1609,86 @@
         function loadMovies() {
             const movies = JSON.parse(localStorage.getItem('movies') || '[]');
             
+            // Load hero section with featured movie
+            loadHeroSection();
+            
             // Load different categories
             loadMovieRow('recentMovies', movies.slice(-6).reverse());
             loadMovieRow('actionMovies', movies.filter(m => m.genre === 'Action'));
             loadMovieRow('dramaMovies', movies.filter(m => m.genre === 'Drama'));
+            loadMovieRow('sciFiMovies', movies.filter(m => m.genre === 'Sci-Fi'));
+            loadMovieRow('comedyMovies', movies.filter(m => m.genre === 'Comedy'));
             loadContinueWatching();
+        }
+
+        function loadHeroSection() {
+            const movies = JSON.parse(localStorage.getItem('movies') || '[]');
+            if (movies.length === 0) return;
+            
+            // Get highest rated movie for hero section
+            const featuredMovie = movies.reduce((prev, current) => 
+                (prev.imdbRating > current.imdbRating) ? prev : current
+            );
+            
+            if (featuredMovie) {
+                localStorage.setItem('featuredMovie', JSON.stringify(featuredMovie));
+                
+                document.getElementById('heroTitle').textContent = featuredMovie.title;
+                document.getElementById('heroDescription').textContent = featuredMovie.description;
+                
+                const heroSection = document.getElementById('heroSection');
+                if (featuredMovie.poster) {
+                    heroSection.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('${featuredMovie.poster}')`;
+                    heroSection.style.backgroundSize = 'cover';
+                    heroSection.style.backgroundPosition = 'center';
+                }
+            }
+        }
+
+        function playFeaturedMovie() {
+            const featuredMovie = JSON.parse(localStorage.getItem('featuredMovie'));
+            if (featuredMovie) {
+                playMovie(featuredMovie.id);
+            }
+        }
+
+        function openFeaturedMovie() {
+            const featuredMovie = JSON.parse(localStorage.getItem('featuredMovie'));
+            if (featuredMovie) {
+                openMovie(featuredMovie.id);
+            }
         }
 
         function loadNewMovies() {
             const movies = JSON.parse(localStorage.getItem('movies') || '[]');
             const newMovies = movies.sort((a, b) => b.year - a.year);
-            loadMovieRow('newMovies', newMovies);
+            loadMovieRow('newMovies', newMovies.slice(0, 8));
+            
+            const latestMovies = movies.filter(m => m.type === 'movie').sort((a, b) => b.year - a.year);
+            loadMovieRow('latestMovies', latestMovies.slice(0, 8));
+            
+            const newSeries = movies.filter(m => m.type === 'series').sort((a, b) => b.year - a.year);
+            loadMovieRow('newSeries', newSeries);
         }
 
         function loadDiscoverMovies() {
             const movies = JSON.parse(localStorage.getItem('movies') || '[]');
-            loadMovieRow('popularMovies', movies.slice().reverse());
-            const topRated = movies.filter(m => m.imdbRating).sort((a, b) => b.imdbRating - a.imdbRating);
+            
+            // Top rated movies
+            const topRated = movies.filter(m => m.imdbRating && m.type === 'movie').sort((a, b) => b.imdbRating - a.imdbRating);
             loadMovieRow('topRatedMovies', topRated);
+            
+            // Popular this week (randomly shuffle for demo)
+            const shuffled = [...movies].sort(() => 0.5 - Math.random());
+            loadMovieRow('popularMovies', shuffled.slice(0, 8));
+            
+            // Classic movies (older high-rated films)
+            const classics = movies.filter(m => m.year < 2000 && m.imdbRating >= 8.5).sort((a, b) => b.imdbRating - a.imdbRating);
+            loadMovieRow('classicMovies', classics);
+            
+            // Trending series
+            const trendingSeries = movies.filter(m => m.type === 'series').sort((a, b) => b.imdbRating - a.imdbRating);
+            loadMovieRow('trendingSeries', trendingSeries);
         }
 
         function loadMovieRow(containerId, movies) {
